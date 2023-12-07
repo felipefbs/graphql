@@ -28,11 +28,13 @@ func main() {
 		port = defaultPort
 	}
 
-	categoryDB := databases.NewCategory(db)
+	categoryRepo := databases.NewCategory(db)
+	courseRepo := databases.NewCourse(db)
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{
 		Resolvers: &graph.Resolver{
-			CategoryRepository: *categoryDB,
+			CategoryRepository: *categoryRepo,
+			CourseRepository:   *courseRepo,
 		},
 	}))
 

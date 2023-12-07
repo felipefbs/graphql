@@ -8,4 +8,5 @@ import "github.com/felipefbs/graphql/internal/databases"
 
 type Resolver struct {
 	CategoryRepository databases.CategoryRepository
+	CourseRepository   databases.CourseRepository
 }
