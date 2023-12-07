@@ -34,3 +34,25 @@ func (repo *Repository) Create(name, description string) (*CategoryModel, error)
 		Description: description,
 	}, nil
 }
+
+func (repo *Repository) FindAll() ([]CategoryModel, error) {
+	rows, err := repo.db.Query("SELECT id, name, description FROM categories")
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	categories := []CategoryModel{}
+	for rows.Next() {
+		var id, name, description string
+
+		if err := rows.Scan(&id, &name, &description); err != nil {
+			return nil, err
+		}
+
+		categories = append(categories, CategoryModel{ID: id, Name: name, Description: description})
+	}
+
+	return categories, nil
+}
