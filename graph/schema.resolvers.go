@@ -13,7 +13,7 @@ import (
 
 // CreateCategory is the resolver for the createCategory field.
 func (r *mutationResolver) CreateCategory(ctx context.Context, input model.NewCategory) (*model.Category, error) {
-	categoryModel, err := r.Repository.Create(input.Name, *input.Description)
+	categoryModel, err := r.CategoryRepository.Create(input.Name, *input.Description)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (r *mutationResolver) CreateCourse(ctx context.Context, input model.NewCour
 
 // Categories is the resolver for the categories field.
 func (r *queryResolver) Categories(ctx context.Context) ([]*model.Category, error) {
-	modelList, err := r.Repository.FindAll()
+	modelList, err := r.CategoryRepository.FindAll()
 	if err != nil {
 		return nil, err
 	}

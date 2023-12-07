@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type Repository struct {
+type CategoryRepository struct {
 	db *sql.DB
 }
 
@@ -14,11 +14,11 @@ type CategoryModel struct {
 	ID, Name, Description string
 }
 
-func NewCategory(db *sql.DB) *Repository {
-	return &Repository{db: db}
+func NewCategory(db *sql.DB) *CategoryRepository {
+	return &CategoryRepository{db: db}
 }
 
-func (repo *Repository) Create(name, description string) (*CategoryModel, error) {
+func (repo *CategoryRepository) Create(name, description string) (*CategoryModel, error) {
 	id := uuid.NewString()
 
 	_, err := repo.db.Exec("INSERT INTO categories (id, name, description) VALUES ($1, $2, $3)",
@@ -35,7 +35,7 @@ func (repo *Repository) Create(name, description string) (*CategoryModel, error)
 	}, nil
 }
 
-func (repo *Repository) FindAll() ([]CategoryModel, error) {
+func (repo *CategoryRepository) FindAll() ([]CategoryModel, error) {
 	rows, err := repo.db.Query("SELECT id, name, description FROM categories")
 	if err != nil {
 		return nil, err
