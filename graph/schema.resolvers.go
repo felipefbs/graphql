@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/felipefbs/graphql/graph/model"
 )
@@ -24,13 +25,15 @@ func (r *categoryResolver) Courses(ctx context.Context, obj *model.Category) ([]
 			ID:          v.ID,
 			Name:        &v.Name,
 			Description: &v.Description,
-			Category: &model.Category{
-				ID: v.CategoryID,
-			},
 		}
 	}
 
 	return response, nil
+}
+
+// Category is the resolver for the category field.
+func (r *courseResolver) Category(ctx context.Context, obj *model.Course) (*model.Category, error) {
+	panic(fmt.Errorf("not implemented: Category - category"))
 }
 
 // CreateCategory is the resolver for the createCategory field.
@@ -58,9 +61,6 @@ func (r *mutationResolver) CreateCourse(ctx context.Context, input model.NewCour
 		ID:          courseModel.ID,
 		Name:        &courseModel.Name,
 		Description: &courseModel.Description,
-		Category: &model.Category{
-			ID: courseModel.CategoryID,
-		},
 	}, nil
 }
 
@@ -98,9 +98,6 @@ func (r *queryResolver) Courses(ctx context.Context) ([]*model.Course, error) {
 			ID:          v.ID,
 			Name:        &v.Name,
 			Description: &v.Description,
-			Category: &model.Category{
-				ID: v.CategoryID,
-			},
 		}
 	}
 
@@ -110,6 +107,9 @@ func (r *queryResolver) Courses(ctx context.Context) ([]*model.Course, error) {
 // Category returns CategoryResolver implementation.
 func (r *Resolver) Category() CategoryResolver { return &categoryResolver{r} }
 
+// Course returns CourseResolver implementation.
+func (r *Resolver) Course() CourseResolver { return &courseResolver{r} }
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
@@ -118,6 +118,7 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type (
 	categoryResolver struct{ *Resolver }
+	courseResolver   struct{ *Resolver }
 	mutationResolver struct{ *Resolver }
 	queryResolver    struct{ *Resolver }
 )
