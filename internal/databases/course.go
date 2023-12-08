@@ -44,7 +44,7 @@ func (repo *CourseRepository) FindAll() ([]CourseModel, error) {
 
 	defer rows.Close()
 
-	categories := []CourseModel{}
+	coursesResponse := []CourseModel{}
 	for rows.Next() {
 		var id, name, description, categoryID string
 
@@ -52,8 +52,30 @@ func (repo *CourseRepository) FindAll() ([]CourseModel, error) {
 			return nil, err
 		}
 
-		categories = append(categories, CourseModel{ID: id, Name: name, Description: description, CategoryID: categoryID})
+		coursesResponse = append(coursesResponse, CourseModel{ID: id, Name: name, Description: description, CategoryID: categoryID})
 	}
 
-	return categories, nil
+	return coursesResponse, nil
+}
+
+func (repo *CourseRepository) FindAllByCategoryID(categoryID string) ([]CourseModel, error) {
+	rows, err := repo.db.Query("SELECT id, name, description FROM courses where category_id = $1", categoryID)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	coursesResponse := []CourseModel{}
+	for rows.Next() {
+		var id, name, description string
+
+		if err := rows.Scan(&id, &name, &description); err != nil {
+			return nil, err
+		}
+
+		coursesResponse = append(coursesResponse, CourseModel{ID: id, Name: name, Description: description, CategoryID: categoryID})
+	}
+
+	return coursesResponse, nil
 }

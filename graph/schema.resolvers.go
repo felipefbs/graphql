@@ -6,14 +6,31 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/felipefbs/graphql/graph/model"
 )
 
 // Courses is the resolver for the courses field.
 func (r *categoryResolver) Courses(ctx context.Context, obj *model.Category) ([]*model.Course, error) {
-	panic(fmt.Errorf("not implemented: Courses - courses"))
+	modelList, err := r.CourseRepository.FindAllByCategoryID(obj.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := make([]*model.Course, len(modelList))
+
+	for k, v := range modelList {
+		response[k] = &model.Course{
+			ID:          v.ID,
+			Name:        &v.Name,
+			Description: &v.Description,
+			Category: &model.Category{
+				ID: v.CategoryID,
+			},
+		}
+	}
+
+	return response, nil
 }
 
 // CreateCategory is the resolver for the createCategory field.
