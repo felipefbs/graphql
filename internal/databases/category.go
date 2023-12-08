@@ -56,3 +56,17 @@ func (repo *CategoryRepository) FindAll() ([]CategoryModel, error) {
 
 	return categories, nil
 }
+
+func (repo *CategoryRepository) FindByCourseID(courseID string) (*CategoryModel, error) {
+	var id, name, description string
+	err := repo.db.QueryRow("SELECT ca.id, ca.name, ca.description FROM categories ca join courses co on co.category_id = ca.id where co.id = $1;", courseID).Scan(&id, &name, &description)
+	if err != nil {
+		return nil, err
+	}
+
+	return &CategoryModel{
+		ID:          id,
+		Name:        name,
+		Description: description,
+	}, nil
+}
