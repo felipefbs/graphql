@@ -35,3 +35,25 @@ func (repo *CourseRepository) Create(name, description, categoryID string) (*Cou
 		CategoryID:  categoryID,
 	}, nil
 }
+
+func (repo *CourseRepository) FindAll() ([]CourseModel, error) {
+	rows, err := repo.db.Query("SELECT id, name, description, category_id FROM courses")
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	categories := []CourseModel{}
+	for rows.Next() {
+		var id, name, description, categoryID string
+
+		if err := rows.Scan(&id, &name, &description, &categoryID); err != nil {
+			return nil, err
+		}
+
+		categories = append(categories, CourseModel{ID: id, Name: name, Description: description, CategoryID: categoryID})
+	}
+
+	return categories, nil
+}
