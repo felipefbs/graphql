@@ -31,6 +31,24 @@ func main() {
 	categoryRepo := databases.NewCategory(db)
 	courseRepo := databases.NewCourse(db)
 
+	_, err = db.Exec("CREATE TABLE categories (id string, name string, description string)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = db.Exec("CREATE TABLE courses  (id string, name string, description string, category_id) ")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	createdCategory, err := categoryRepo.Create("Tecnologia", "Cursos de Tecnologia")
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = courseRepo.Create("Full Cycle", "curso full cycle", createdCategory.ID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{
 		Resolvers: &graph.Resolver{
 			CategoryRepository: *categoryRepo,
